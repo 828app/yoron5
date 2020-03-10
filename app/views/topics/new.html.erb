@@ -1,0 +1,19 @@
+<div class="tab">
+    <div class="tab-btn">
+      <%=link_to "人気", root_path, method: :get, :class=>"btn" %>
+      <%=link_to "新着", new_topic_path, method: :get, :class=>"btn on" %>
+    </div>
+    <div id="main">
+             <% @topics.each do |topic| %>
+             <div class="topic">
+              <h3><%= image_tag 'yazi.png',:size => '20x20' %><%= link_to topic.title, "/topics/#{topic.id}",:style=>"margin-left:-10px;",method: :get %>
+              </h3>
+              <div class="topicdetail">
+              投稿者：<%= topic.name %> /コメント：<%= topic.coms %> /投票：<%= topic.pollnum %>
+              </div>
+            </div>
+            <% end %>
+            <%= paginate(@topics) %>
+    </div>
+</div>
+

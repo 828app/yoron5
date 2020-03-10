@@ -1,0 +1,65 @@
+<% provide(:title, "新規投稿") %>
+<div id="main">
+<h2>トピックを投稿</h2>
+
+<%= form_for @topic, html: { class: 'form-inline'}, :url => {:controller => :topics, :action => :create} do |f| %>
+
+    <div class ="form-group form">
+      <%= f.label :タイトル： %>
+      <%= f.text_field :title, placeholder: '名前' , class: 'form-control' %>
+    </div><br>
+    <div class ="form-group form" >
+      <%= f.label :名前： %>
+      <%= f.text_field :name, placeholder: '名前', class:'form-control' %>
+    </div>
+
+    <div>
+      <%= f.label :本文： %><br>
+      <%= f.text_area :text, placeholder: '本文', style: 'width: 100%;height: 200px;' %>
+    </div>
+    <div class ="form-group form" >
+      <%= f.label :yoron1： %>
+      <%= f.text_field :yoron1, placeholder: '1', class: 'form-control' %><br>
+    </div><br>
+    <div class ="form-group form" >
+       <%= f.label :yoron2： %>
+      <%= f.text_field :yoron2, placeholder: '2', class: 'form-control' %><br>
+    </div><br>
+    <div class ="form-group form" >
+       <%= f.label :yoron3： %>
+      <%= f.text_field :yoron3, placeholder: '3', class: 'form-control' %><br>
+    </div><br>
+    <div class ="form-group form" >
+       <%= f.label :yoron4： %>
+      <%= f.text_field :yoron4, placeholder: '4', class: 'form-control' %><br>
+    </div><br>
+    <div class ="form-group form" >
+       <%= f.label :yoron5： %>
+      <%= f.text_field :yoron5, placeholder: '5', class: 'form-control' %><br>
+    </div><br>
+    <div class ="form-group form" >
+       <%= f.label :Yoron6： %>
+      <%= f.text_field :yoron6, placeholder: '6', class: 'form-control' %><br>
+    </div><br>
+    <div class ="form-group form" >
+      <%= f.label :yoron7： %>
+      <%= f.text_field :yoron7, placeholder: '7', class: 'form-control' %><br>
+    </div><br>
+     <% if @topicips.include?(request.remote_ip)==false %>
+          <%= f.submit value:"トピックを投稿",:class=>"postbtn"%>
+      <% else %>
+        <div class="postbtn2">トピックの投稿は３時間に１回までです</div>
+    <% end %>
+
+<% end %>
+
+<!--バリデーションエラー時のメッセージ -->
+<div class="error">
+  <% if @topic.errors.any? %>
+    <% @topic.errors.full_messages.each do |message| %>
+      <% msg = message.split(" ") %>
+      <li class="errmsg"><%= msg[1] %></li>
+     <% end %>
+  <% end %>
+</div>
+</div>

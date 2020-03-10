@@ -1,0 +1,131 @@
+<% provide(:title, @topic.title) %>
+  <div id="main">
+
+    <h2><%= image_tag 'yazi.png',:size => '25x25',:style=>"padding-bottom:6px;" %><%=@topic.title %></h2>
+
+    <div class="commentinfo">
+      投稿者：<span class="name"><%= @topic.name %></span>
+      <%= @topic.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+    </div>
+    <div class="commenttext">
+      <b><%= simple_format(h(@topic.text)) %></b>
+    </div>
+
+    <div style="width: 100%">
+      <!-- グラフ -->
+      <canvas id="chart" height="450" width="600"></canvas>
+    </div>
+    <div id="postform">
+      <!-- 投票フォーム -->
+      <%= form_for @topic, :url => {:action => 'update'} do |f| %>
+    <div style="margin: auto;" class="cp_ipselect cp_sl03">
+
+      <%= f.select :poll, @yorons,:prompt => "選択",style: { 'margin-top' => 50 } %>
+    </div>
+    <% if @ips.include?(request.remote_ip)==false %>
+      <%= f.submit value="投票", :class=>"tohyobtn"%>
+    <% else %>
+      <div class="tohyobtn2">投票完了</div>
+    <% end %>
+
+  <% end %>
+
+
+
+
+
+
+  </div>
+
+  <div id="sharebtn">
+
+    <input type="button" onclick="window.open('http://twitter.com/share?url=http://yoronjp.org/topics/<%= @topic.id %>&text=<%= @topic.title %>')" class="twitterbtn" value="Twitterでシェア">
+
+    <input type="button" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=http://yoronjp.org/topics/<%= @topic.id %>&text=<%= @topic.title %>')" class="facebookbtn" value="Facebookでシェア">
+
+  </div>
+
+  <p id="comcom">コメントを投稿する</p>
+
+  <!-- コメント投稿フォーム -->
+  <%= form_for [@topic, @comment],html: { class: 'form-inline'}, :url => {:controller => :topics,:action => :comment} do |f| %>
+    <div class ="form-group form" >
+      <%= f.label :名前：%>
+      <%= f.text_field :name, placeholder: '名前', class: 'form-control' %>
+    </div><br>
+    <div clss ="form">
+      <%= f.label :本文：%><br>
+      <%= f.text_area :text, placeholder: '本文', style: 'width: 100%;height: 200px;' %>
+    </div>
+    <% if @comips.include?(request.remote_ip) == false %>
+      <%= f.submit value:"コメント投稿",:class=>"postbtn" %>
+    <% else %>
+      <div class="postbtn2">
+        コメントの連投は禁止されています</div>
+    <% end %>
+<% end %>
+
+<!-- コメント一覧 -->
+<% @comments.each do |comment| %>
+  <div class="comments">
+    <div class="commentinfo">
+      <%= comment.num %>
+      名前：<span class="name"><%= comment.name %></span>
+      <%= comment.created_at.strftime("%Y-%m-%d %H:%M:%S") %>
+    </div>
+    <div class="commenttext">
+      <%= simple_format(h(comment.text)) %>
+    </div>
+  </div>
+<% end %>
+
+<%# ページネーション %>
+<%= paginate @comments,params: {:param => "test"} %>
+
+</div>
+
+<% if @comment.errors.any? %>
+<%= @comment.errors.messages[:title][0] %>
+<br>
+<%= @comment.errors.messages[:name][0] %><br>
+<% end %>
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
+
+<script>
+  console.log("aaa")
+  $(document).on('turbolinks:load', function() {
+
+  var chartData = {
+    labels: <%= @yorons_j %>,
+    datasets: [
+      {
+        fillColor:/*"#d685b0"*/
+        "rgba(214,133,176,0.7)",
+        strokeColor:/*"#d685b0"*/
+        "rgba(214,133,176,0.7)",
+        highlightFill:/*"#eebdcb"*/
+        "rgba(238,189,203,0.7)",
+        highlightStroke:/*"#eebdcb"*/
+        "rgba(238,189,203,0.7)",
+        data: <%= @polls_j %>
+      }
+    ]
+
+  }
+
+    var ctx = document.getElementById("chart").getContext("2d");
+    window.myBar = new Chart(ctx).Bar(chartData, {
+      responsive: true,
+    });
+
+
+
+});
+
+
+
+</script>
