@@ -4,6 +4,9 @@ require "capistrano/setup"
 # Include default deployment tasks
 require "capistrano/deploy"
 
+#4/2追加
+require 'capistrano/rails/assets'
+
 # Load the SCM plugin appropriate to your project:
 #
 # require "capistrano/scm/hg"
