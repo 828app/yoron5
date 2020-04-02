@@ -72,3 +72,13 @@ gem 'factory_girl_rails'
 gem 'rake', '< 11.0'
 gem 'rails-controller-testing'
 gem 'jquery-rails'
+group :development, :test do
+ gem 'capistrano'
+ gem 'capistrano-bundler'
+ gem 'capistrano-rails'
+ gem 'capistrano-rbenv'
+end
+
+group :production, :staging do
+  gem 'unicorn'
+end

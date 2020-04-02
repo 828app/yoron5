@@ -12,14 +12,13 @@
     </div>
 
     <div style="width: 100%">
-      <!-- グラフ -->
+      <!-- グラフ描画 -->
       <canvas id="chart" height="450" width="600"></canvas>
     </div>
     <div id="postform">
       <!-- 投票フォーム -->
       <%= form_for @topic, :url => {:action => 'update'} do |f| %>
     <div style="margin: auto;" class="cp_ipselect cp_sl03">
-
       <%= f.select :poll, @yorons,:prompt => "選択",style: { 'margin-top' => 50 } %>
     </div>
     <% if @ips.include?(request.remote_ip)==false %>
@@ -27,22 +26,13 @@
     <% else %>
       <div class="tohyobtn2">投票完了</div>
     <% end %>
-
   <% end %>
-
-
-
-
-
-
   </div>
 
+<!-- シェアボタン -->
   <div id="sharebtn">
-
     <input type="button" onclick="window.open('http://twitter.com/share?url=http://yoronjp.org/topics/<%= @topic.id %>&text=<%= @topic.title %>')" class="twitterbtn" value="Twitterでシェア">
-
     <input type="button" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=http://yoronjp.org/topics/<%= @topic.id %>&text=<%= @topic.title %>')" class="facebookbtn" value="Facebookでシェア">
-
   </div>
 
   <p id="comcom">コメントを投稿する</p>
@@ -90,11 +80,7 @@
 <%= @comment.errors.messages[:name][0] %><br>
 <% end %>
 
-
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-
 <script>
   console.log("aaa")
   $(document).on('turbolinks:load', function() {
@@ -114,18 +100,10 @@
         data: <%= @polls_j %>
       }
     ]
-
   }
-
     var ctx = document.getElementById("chart").getContext("2d");
     window.myBar = new Chart(ctx).Bar(chartData, {
       responsive: true,
     });
-
-
-
 });
-
-
-
 </script>

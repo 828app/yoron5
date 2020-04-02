@@ -22,42 +22,28 @@ class TopicsController < ApplicationController
     @comments = @topic.comments.page(params[:page]).per(5).order('created_at ASC')
     @yorons = [] # yoronのための配列を作成
     @polls = [@topic.poll1, @topic.poll2, @topic.poll3, @topic.poll4, @topic.poll5, @topic.poll6, @topic.poll7] # 投票数のための配列
-    if @topic.yoron1.blank?
-    else
-      @yorons.push(@topic.yoron1) # yorons配列に@topicpoll1を追加
-    end
-    if @topic.yoron2.blank?
-    else
-      @yorons.push(@topic.yoron2)
-    end
+
+    # グラフ下部表示用のyorons配列を追加
+    @yorons.push(@topic.yoron1)
+    @yorons.push(@topic.yoron2)
     # yoron2までは投稿必須だがyoron3以降は任意となる。yroon3以降が空の場合は@pollsの配列から@topic.poll3以降の配列を削除。
     if @topic.yoron3.blank?
-      @polls.delete_at(2)
-      @polls.delete_at(2)
-      @polls.delete_at(2)
-      @polls.delete_at(2)
-      @polls.delete_at(2)
+      @polls.slice!(2, 6)
     else
       @yorons.push(@topic.yoron3)
     end
     if @topic.yoron4.blank?
-      @polls.delete_at(3)
-      @polls.delete_at(3)
-      @polls.delete_at(3)
-      @polls.delete_at(3)
+      @polls.slice!(3, 5)
     else
       @yorons.push(@topic.yoron4)
     end
     if @topic.yoron5.blank?
-      @polls.delete_at(4)
-      @polls.delete_at(4)
-      @polls.delete_at(4)
+      @polls.slice!(4, 4)
     else
       @yorons.push(@topic.yoron5)
     end
     if @topic.yoron6.blank?
-      @polls.delete_at(5)
-      @polls.delete_at(5)
+      @polls.slice!(5, 3)
     else
       @yorons.push(@topic.yoron6)
     end
@@ -66,6 +52,7 @@ class TopicsController < ApplicationController
     else
       @yorons.push(@topic.yoron7)
     end
+    # jsonに変換
     @yorons_j = @yorons.to_json.html_safe
     @polls_j = @polls.to_json.html_safe
   end
@@ -74,7 +61,6 @@ class TopicsController < ApplicationController
   def search
      @keyword = params[:keyword]
      @topics = Topic.where("title LIKE ?", "%#{@keyword}%").page(params[:page]).per(15).order('created_at DESC')
-     # binding.pry
   end
 
   def newpost # 新規トピック投稿
@@ -90,14 +76,6 @@ class TopicsController < ApplicationController
   def create
     @topic = Topic.new(create_params)
     if @topic.save
-      # @client = Twitter::REST::Client.new do |t|
-      #   t.consumer_key = '1lKgeRavhqxkJz2D5JS8zyqhd'
-      #   t.consumer_secret     = 'utYnR2bghlgKedvVD9ciXDqKIB9CLkhji0uUTUjxmYWSwP8o3Z'
-      #   t.access_token        = '1039598193439383552-046ZMSVEFd4zYqBkXwLTbAqYx8SEr2'
-      #   t.access_token_secret = 'xGCIupFWh20bsaxhmSnYNlfr7eKpZHzyXr7jaUVBhPcFs'
-      # end
-      # tweet = "#{@topic.title}\nhttp://yoronjp.org/topics/#{@topic.id}"
-      # @client.update(tweet)
       redirect_to action: :topicposted
     else
       @topicips = Topic.where(created_at: 3.hours.ago..Time.now).pluck(:ip) # ３時間以内に投稿されたトピックの投稿者ipを取得
@@ -134,12 +112,6 @@ class TopicsController < ApplicationController
     if @ips.include?(request.remote_ip) == false
       @topic.pollnum += 1 # 合計の投票数をプラス１
       @topic.update(poll_update) # そしてアップデート
-      # @yorons=@@yorons
-      # @comment=@@comment
-      # @comments=@@comments
-      # @polls_j=@@polls_j
-      # @yorons_j=@@yorons_j
-      # yoronの投票数をプラス１する
       if @topic.poll == @topic.yoron1
         @topic.poll1 += 1
       elsif @topic.poll == @topic.yoron2
@@ -179,16 +151,8 @@ class TopicsController < ApplicationController
 
   def create_params
     params[:topic]['ip'] = request.remote_ip
-    params[:topic]['poll1'] = 0
-    params[:topic]['poll2'] = 0
-    params[:topic]['poll3'] = 0
-    params[:topic]['poll4'] = 0
-    params[:topic]['poll5'] = 0
-    params[:topic]['poll6'] = 0
-    params[:topic]['poll7'] = 0
-    params[:topic]['coms'] = 0
-    params[:topic]['pollnum'] = 0
-    params[:topic]['recent'] = 0
+    params[:topic]['poll1'], params[:topic]['poll2'], params[:topic]['poll3'], params[:topic]['poll4'], params[:topic]['poll5'], params[:topic]['poll6'],params[:topic]['poll7'] = 0,0,0,0,0,0,0,0
+    params[:topic]['coms'], params[:topic]['pollnum'],params[:topic]['recent'] = 0,0,0
     params[:topic]['name'] = '匿名' if params[:topic]['name'].blank?
     params.require(:topic).permit(:title, :text, :name, :yoron1, :yoron2, :yoron3, :yoron4, :yoron5, :yoron6, :yoron7, :poll1, :poll2, :poll3, :poll4, :poll5, :poll6, :poll7, :pollnum, :coms, :recent, :ip)
   end
