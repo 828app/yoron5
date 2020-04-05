@@ -56,7 +56,6 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 gem 'kaminari'
 gem 'pry-rails'
 gem 'sprockets'
-gem 'whenever', require: false
 group :production, :staging do
   gem 'rails_12factor'
 end

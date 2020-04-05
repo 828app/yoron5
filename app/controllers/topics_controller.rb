@@ -1,7 +1,5 @@
 
 class TopicsController < ApplicationController
-  # コメントのページネーションが上手くいかない 早急に改善
-
   helper_method :comment
 
   def index
@@ -18,8 +16,7 @@ class TopicsController < ApplicationController
     @ips = Ip.where(created_at: 24.hours.ago..Time.now, topic_id: @topic.id).pluck(:ip) # 24時間以内にトピックに対して投票した人間のip取得
     @comips = Comment.where(created_at: 2.minutes.ago..Time.now, topic_id: @topic.id).pluck(:ip)
     @comment = Comment.new # show.html.erb内でコメントを書くため
-    #コメント
-    @comments = @topic.comments.page(params[:page]).per(5).order('created_at ASC')
+    @comments = @topic.comments.page(params[:page]).per(5).order('created_at ASC')    #コメント
     @yorons = [] # yoronのための配列を作成
     @polls = [@topic.poll1, @topic.poll2, @topic.poll3, @topic.poll4, @topic.poll5, @topic.poll6, @topic.poll7] # 投票数のための配列
 
@@ -63,29 +60,25 @@ class TopicsController < ApplicationController
      @topics = Topic.where("title LIKE ?", "%#{@keyword}%").page(params[:page]).per(15).order('created_at DESC')
   end
 
-  def newpost # 新規トピック投稿
+  # 新規トピック投稿画面
+  def newpost
     @topic = Topic.new
     @topicips = Topic.where(created_at: 3.hours.ago..Time.now).pluck(:ip) # ３時間以内に投稿されたトピックの投稿者ipを取得
   end
 
-  def kanri
-    @topics = Topic.new
-    @posts = Post.page(params[:page]).per(5).order('created_at DESC')
-  end
-
+  # 新規トピック作成
   def create
     @topic = Topic.new(create_params)
     if @topic.save
       redirect_to action: :topicposted
     else
       @topicips = Topic.where(created_at: 3.hours.ago..Time.now).pluck(:ip) # ３時間以内に投稿されたトピックの投稿者ipを取得
-
-      render 'newpost' # バリデーションエラーの場合レンダー
+      render 'newpost' # バリデーションエラー時
     end
   end
 
+  # コメント
   def comment
-    # @topic = show
     @comment = Comment.new(comment_params)
     if @comment.save
       @com = @@topicid.coms
@@ -104,14 +97,14 @@ class TopicsController < ApplicationController
     @id = @@topicid.id
   end
 
-# 投票した時にプラス１する
+  # 投票したときに投票数をプラスする
   def update
     @topic = Topic.find(params[:id])
     # 同じIPで投票させない機能
-    @ips = Ip.where(topic_id: @topic.id).pluck(:ip)
+    @ips = Ip.where(created_at: 24.hours.ago..Time.now, topic_id: @topic.id).pluck(:ip)
     if @ips.include?(request.remote_ip) == false
       @topic.pollnum += 1 # 合計の投票数をプラス１
-      @topic.update(poll_update) # そしてアップデート
+      @topic.update(poll_update) # 投票数をアップデート
       if @topic.poll == @topic.yoron1
         @topic.poll1 += 1
       elsif @topic.poll == @topic.yoron2
@@ -128,11 +121,12 @@ class TopicsController < ApplicationController
            @topic.poll7 += 1
       end
       @topic.save!
-      # 投票者のIPをipテーブルに記録
+      # 投票者のIPをipを記録
       ip = Ip.new
       ip.ip = request.remote_ip
       ip.topic_id = @topic.id
       ip.save
+      # リダイレクト
       redirect_to action: 'show'
     else
       redirect_to action: 'index'
