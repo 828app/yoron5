@@ -1,0 +1,14 @@
+
+  <div id="main">
+    <h2>トピック検索</h2>
+    <%= form_tag('/search', :method => "get") do %>
+    <div class="input-group searchform">
+
+      <input type="text searchform" class="form-control" placeholder="検索ワード" name="keyword" aria-label="...">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-default searchbtn"">検索</button>
+      </span>
+    </div>
+  <% end %>
+  <br>
+  </div>

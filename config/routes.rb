@@ -8,9 +8,8 @@ Rails.application.routes.draw do
   get 'topics' => 'topics#index'
   post 'comment' => 'topics#comment'
   get 'aftercomment' => 'topics#aftercomment'
-  get 'search' => 'topics#search'
-  get 'admin' => 'topics#admin'
-
+  get 'search' => 'topics#search'#検索結果
+  get 'kensaku' => 'topics#kensaku'# スマホ用検索ページ
   get 'newpost' => 'topics#newpost'
   get 'categorys' => 'topics#categorys'
   get 'topicposted' => 'topics#topicposted' # トピックの新規投稿後に飛ぶページ
