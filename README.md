@@ -1,24 +1,19 @@
-# README
+# サービスの名前
+Yoron!
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 概要
+意見の分かれる議題に対し、投票形式で世論をはっきりさせるためのサービスです。
 
-Things you may want to cover:
+***デモ***
+http://yoronjp.org
 
-* Ruby version
+## 使い方
+***投票***
+各トピックページに移動し、プルダウンから選択肢を選び投票ボタンを押す。
 
-* System dependencies
+***トピック投稿***
+トピック投稿ページから、タイトル、名前、本文、選択肢を入力し、投稿ボタンを押す。
 
-* Configuration
 
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## コンタクト
+yoronjp1@gmail.com
