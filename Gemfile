@@ -68,7 +68,7 @@ gem 'carrierwave'
 gem 'execjs'
 gem 'rspec-rails'
 gem 'factory_girl_rails'
-gem 'rake', '< 11.0'
+gem 'rake', '< 13.0'
 gem 'rails-controller-testing'
 gem 'jquery-rails'
 group :development, :test do
