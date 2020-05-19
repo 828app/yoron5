@@ -16,7 +16,7 @@ class TopicsController < ApplicationController
     @ips = Ip.where(created_at: 24.hours.ago..Time.now, topic_id: @topic.id).pluck(:ip) # 24時間以内にトピックに対して投票した人間のip取得
     @comips = Comment.where(created_at: 2.minutes.ago..Time.now, topic_id: @topic.id).pluck(:ip)
     @comment = Comment.new # show.html.erb内でコメントを書くため
-    @comments = @topic.comments.page(params[:page]).per(5).order('created_at ASC')    #コメント
+    @comments = @topic.comments.page(params[:page]).per(100).order('created_at ASC')    #コメント
     @yorons = [] # yoronのための配列を作成
     @polls = [@topic.poll1, @topic.poll2, @topic.poll3, @topic.poll4, @topic.poll5, @topic.poll6, @topic.poll7] # 投票数のための配列
 

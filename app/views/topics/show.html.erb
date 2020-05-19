@@ -48,7 +48,7 @@
       <%= f.text_area :text, placeholder: '本文', style: 'width: 100%;height: 200px;' %>
     </div>
     <% if @comips.include?(request.remote_ip) == false %>
-      <%= f.submit value:"コメント投稿",:class=>"postbtn" %>
+      <%= f.submit value:"コメント投稿",:class=>"postbtn",:id=>"postbtn" %>
     <% else %>
       <div class="postbtn2">
         コメントの連投は禁止されています</div>
@@ -82,7 +82,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
 <script>
-  console.log("aaa")
   $(document).on('turbolinks:load', function() {
 
   var chartData = {
@@ -105,5 +104,14 @@
     window.myBar = new Chart(ctx).Bar(chartData, {
       responsive: true,
     });
+});
+// コメント本文未入力でアラート
+$("#postbtn").click(function(){
+  if ($("textarea[name='comment[text]']").val() == '') {
+    alert('本文を入力してください');
+    return false;
+  } else {
+   $("#new_comment").submit();
+  }
 });
 </script>
