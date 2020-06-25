@@ -13,6 +13,8 @@ Rails.application.routes.draw do
   get 'newpost' => 'topics#newpost'
   get 'categorys' => 'topics#categorys'
   get 'topicposted' => 'topics#topicposted' # トピックの新規投稿後に飛ぶページ
+  get 'tweet' => 'topics#tweet'
+  get 'login' => 'topics#login'
   get 'contact' => 'topics#contact'
   get 'aftercontact' => 'topics#aftercontact'
   get 'agreement' => 'topics#agreement'

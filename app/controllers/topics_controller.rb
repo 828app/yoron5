@@ -133,6 +133,13 @@ class TopicsController < ApplicationController
     end
   end
 
+  def tweet
+    
+  end
+
+  def login
+
+  end
   private
 # コメントテーブルのidカラムテーブルに入れる（Topicテーブル内でこの操作をしているための処置）
   def comment_params
