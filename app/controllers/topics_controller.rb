@@ -79,14 +79,16 @@ class TopicsController < ApplicationController
 
   # コメント
   def comment
-    @comment = Comment.new(comment_params)
+    @topicid = params[:comment]['topic_id']
+    @topic = Topic.find(@topicid)
+    @comment = Comment.new(comment_params(@topicid))
     if @comment.save
-      @com = @@topicid.coms
+      @com = @topic.coms
       @com += 1
-      @recent = Comment.where(created_at: 1.months.ago..Time.now, topic_id: @@topicid.id) # １ヶ月以内に特定のトピックに投稿されたコメントを全部取得
+      @recent = Comment.where(created_at: 1.months.ago..Time.now, topic_id: @topic.id) # １ヶ月以内に特定のトピックに投稿されたコメントを全部取得
       @recentnum = @recent.length # コメントの数を取得
-      @@topicid.update(coms: @com, recent: @recentnum)
-      redirect_to action: 'aftercomment'
+      @topic.update(coms: @com, recent: @recentnum)
+      redirect_to aftercomment_path(topic: @topicid)
     else
       render 'show'
     end
@@ -94,7 +96,7 @@ class TopicsController < ApplicationController
 
   #コメント投稿後のページ
   def aftercomment
-    @id = @@topicid.id
+    @id = params[:topic]
   end
 
   # 投票したときに投票数をプラスする
@@ -134,7 +136,7 @@ class TopicsController < ApplicationController
   end
 
   def tweet
-    
+
   end
 
   def login
@@ -142,12 +144,11 @@ class TopicsController < ApplicationController
   end
   private
 # コメントテーブルのidカラムテーブルに入れる（Topicテーブル内でこの操作をしているための処置）
-  def comment_params
-    params[:comment]['topic_id'] = @@topicid.id
+  def comment_params(topicid)
     params[:comment]['ip'] = request.remote_ip
-    params[:comment]['num'] = @@topicid.coms + 1 # トピック内でのコメントの番号を記入
+    params[:comment]['num'] = Topic.find(topicid).coms + 1 # トピック内でのコメントの番号を記入
     params[:comment]['name'] = '匿名' if params[:comment]['name'].blank?
-    params.require(:comment).permit(:name, :text, :topic_id, :ip, :num)
+    params.require(:comment).permit(:topic_id, :name, :text, :ip, :num)
   end
 
   def create_params

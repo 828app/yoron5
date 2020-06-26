@@ -47,6 +47,7 @@
       <%= f.label :本文：%><br>
       <%= f.text_area :text, placeholder: '本文', style: 'width: 100%;height: 200px;' %>
     </div>
+    <%= f.hidden_field :topic_id, value: @topic.id %>    <!-- hiddenでトピックid渡す -->
     <% if @comips.include?(request.remote_ip) == false %>
       <%= f.submit value:"コメント投稿",:class=>"postbtn",:id=>"postbtn" %>
     <% else %>
